@@ -16,4 +16,6 @@ devtools::install_github("jngtz/map.displ.r")
 ```
 **Examples**
 
-[Visualizing BUnwarpJ mapped surface displacements](https://jngtz.github.io/map.displ.r/articles/2_Visualizing_surface_displacements.html)
+[Using R to visualize mean annual rock glacier surface velocity from BUnwarpJ](https://jngtz.github.io/map.displ.r/articles/2_Visualizing_surface_displacements.html)
+
+[Quick intro for displacement mapping with BUnwarpJ](https://jngtz.github.io/map.displ.r/articles/1_BUnwarpJ_image_registration.html)
