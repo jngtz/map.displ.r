@@ -1,0 +1,379 @@
+#source("C:/Users/jg/Dropbox/PaperModelDisplacement/R/functions/process_BUnwarpJ_2D_image_registrationV02.R")
+#source("/Users/gnj/Dropbox/PaperModelDisplacement/R/functions/process_BUnwarpJ_2D_image_registrationV02.R")
+#source("C:/Users/ku52jek/Dropbox/PaperModelDisplacement/R/functions/process_BUnwarpJ_2D_image_registrationV02.R")
+
+#source("C:/Users/jg/Dropbox/PaperModelDisplacement/R/functions/process_elevation_interpolation.R")
+#source("/Users/gnj/Dropbox/PaperModelDisplacement/R/functions/process_elevation_interpolation.R")
+#source("C:/Users/ku52jek/Dropbox/PaperModelDisplacement/R/functions/process_elevation_interpolation.R")
+
+
+
+
+setwd("D:/WorkingProject/Laurichard/DEMs/Workspace/Grids")
+setwd("D:/JasonGoetz/Research/Laurichard/DEMs/Workspace/Grids")
+
+
+#setwd("C:/Users/jg/Dropbox/PaperModelDisplacement/Data")
+#setwd("/Users/gnj/Dropbox/PaperModelDisplacement/Data")
+
+#setwd("D:\\Projects\\PyITK\\BSpline\\bspline\\Result-13022018")
+
+## NOTES
+
+# - Create a funtion finding the optimal value where the metric can 
+#   can be changes (e.g., MAE, MSE...)
+
+## Load displacements fields ##################################################
+library(raster)
+r_source <- raster("2017-L93-SFM-Oct-10cm.tif")
+r_target <- raster("2012-L93-SAJF-50cm-resamp.tif")
+
+#setwd("D:\\Projects\\PyITK\\BSpline\\bspline\\Results-slope")
+setwd("../Registration/Transformations/Raw")
+
+
+d <- bunwarpjDisplacementField(tx_file = "raw_dem_oct2017-fill_direct_transf.txt", 
+                               r_source, r_target, is_inverse=FALSE)
+
+
+setwd("../../../Grids")
+# Plot performance of registration (error [m])
+r_na <- setValues(r_source, NA)
+plot(r_err <- setValues(r_na, d$z_err))
+plot(r_err_cor <- setValues(r_na, d$z_err_cor))
+
+
+# Create DEM
+plot(r_dem <- setValues(r_na, d$z_reg ))
+
+# Plot displacement magnitudes
+plot(r_xy <- setValues(r_na, d$xy_disp))
+plot(r_xyz <- setValues(r_na, d$xyz_disp))
+
+ann_xyz <- r_xyz/(5 + 1/12 + 19/356)
+ann_xy <- r_xy/(5 + 1/12 + 19/356)
+
+plot(r_aspect <- setValues(r_na, d$aspect))
+plot(r_slope <- setValues(r_na, d$slope))
+
+
+#writeRaster(r_xy, filename = "xyDisp_dem_oct2017-fill_direct.tif", format="GTiff")
+#writeRaster(r_xyz, filename = "xyzDisp_dem_oct2017-fill_direct.tif", format="GTiff")
+
+#writeRaster(ann_xy, filename = "meanAnnual_xyDisp_dem_oct2017-fill_direct.tif", format="GTiff")
+#writeRaster(ann_xyz, filename = "meanAnnual_xyzDisp_dem_oct2017-fill_direct.tif", format="GTiff")
+
+#writeRaster(r_aspect, filename = "aspectDisp_dem_oct2017-fill_direct.tif", format="GTiff")
+
+# Prepare a shapefile for interpolation of the registered
+# image (DEM)
+sp_d <- data.frame(x=d$x_reg, y=d$y_reg, z=d$z_reg)
+sp_d <- sp_d[!is.na(sp_d$z),]
+
+coordinates(sp_d) <- ~x+y
+crs(sp_d) <- crs(r_source)
+
+
+## Calculate displacement adjustment with SIFT ##################################
+#rate_disp <- 0.087 #worked well so far
+
+xy_jun <- imagejPointsToCRS("features_2017-jun.txt",r_source)
+xy_oct <- imagejPointsToCRS("features_2017.txt",r_source)
+
+# Calculate the displacement (movement) between the matched features
+# using Euclidean distance #act: actual displacements , #reg: registered est displacements
+d_adj <- data.frame( act_disp = sqrt( (xy_jun$x - xy_oct$x)^2 + (xy_jun$y - xy_oct$y)^2 ))
+
+# Extract the displacement - make sure to use the image source (e.g. Oct)
+r_xyDisp <- setValues(r_source, d$xy_disp)
+d_adj$reg_disp <- extract(r_xyDisp, xy_oct)
+
+# Compute the scale factor for displacement movemnts
+d_adj$scale_fact <- d_adj$act_disp / d_adj$reg_disp
+
+
+
+# First add xy coordinates for reference
+d_adj <- cbind(xy_oct, d_adj)
+
+
+# Change to spatial data
+sp_adj <- d_adj
+coordinates(sp_adj) <- ~x+y
+crs(sp_adj) <- crs(r_source)
+
+# mask so only areas of rock glacier are used
+library(rgdal)
+s_mask <- readOGR("jun-rock-mask-rglOnly-2201-2951-extent.shp")
+crs(s_mask) <- crs(r_source)
+
+within_mask <- over(sp_adj, s_mask)
+sp_adj@data$within_mask <- within_mask$gridcode
+sp_adj <- sp_adj[!is.na(sp_adj@data$within_mask),]
+
+# Filter by using points only in areas with good displacement estimates
+#r_diff <- raster("Diff_Tar2012_Src2017Oct.tif")
+#sp_adj@data$RegRSE <- sqrt(extract(r_diff, sp_adj)^2) #
+#d_smp <- d_smp[d_smp@data$RegRSE < 0.1 ,] #error less than 10 cm
+
+#Plot data
+bubble(sp_adj, z='scale_fact')
+hist(sp_adj$scale_fact)
+
+# Calc rate based on median 
+rate_disp <- median(sp_adj$scale_fact)
+
+
+
+
+## Calculate displacement with optimization #########################
+
+## Maybe just estimate to the nearest cm. 
+## We don't have mm precision data...
+
+## Maybe we should optimize based on a similarity measure
+## of the interpolated and reference elevation value
+## distribution - wait is that the rmse
+
+# Load DEM for optimization
+r_ref <- raster("2017-L93-SFM-Jun-10cm.tif")
+
+# Load mask
+r_mask <- raster("rgl_mask_2017Jun.tif")
+
+
+# Get range of values to invesitgate for optimization using 1st (upper)
+# and 3rd (lower) quartiles
+
+
+# ! Change to min and max of the SIFT estimate - this way
+# the optimization is fully automated...
+
+upq <- round(median(sp_adj$scale_fact + IQR(sp_adj$scale_fact)), digits=2)
+loq <- round(median(sp_adj$scale_fact - IQR(sp_adj$scale_fact)), digits=2)
+
+seq_scale <- seq(from=0.01, to=0.2, by=0.01)
+rmse <- rep(NA, times=length(seq_scale))
+mae <- rep(NA, times=length(seq_scale))
+
+d_smp <- d
+coordinates(d_smp) <- ~x_source+y_source
+crs(d_smp) <- crs(r_ref)
+d_smp@data$x_source <- d$x_source 
+d_smp@data$y_source <- d$y_source 
+
+d_smp@data$within_mask <- extract(r_mask, d_smp)
+d_smp <- d_smp[d_smp@data$within_mask == 1,]
+
+#r_diff <- raster("Diff_Tar2012_Src2017Oct.tif")
+#d_smp@data$RegRSE <- sqrt(extract(r_diff, d_smp)^2) #Registration root squared error 
+
+# Create a threshold hold to use only areas where the RSE is low 
+# for estimation of the displacement scaling factor
+
+#d_smp <- d_smp[d_smp@data$RegRSE < 0.1 ,] #error less than 10 cm
+
+
+for(i in 1:length(seq_scale)){
+  
+  rate_disp <- seq_scale[i]
+  
+  print(paste(Sys.time(), " -- ", i, "of", length(seq_scale), 
+              "iterations --", "SF =", rate_disp))
+  
+  d_est <- data.frame(x = rep(NA, len=nrow(d_smp)) )
+  d_est$x <- d_smp$x_source + sin(d_smp$aspect*pi/180) * d_smp$xy_disp * rate_disp
+  d_est$y <- d_smp$y_source + cos(d_smp$aspect*pi/180) * d_smp$xy_disp * rate_disp
+  d_est$z <- d_smp$z_source + sin(d_smp$slope*pi/180) * d_smp$xyz_disp * rate_disp
+  
+  d_est <- d_est[!is.na(d_est$z),]
+  
+  coordinates(d_est) <- ~x+y
+  crs(d_est) <- crs(r_ref)
+  
+  #d_est@data$within_mask <- extract(r_mask, d_est)
+  #d_est <- d_est[d_est@data$within_mask == 1,]
+  
+  z_ref <- extract(r_ref, d_est)
+  
+  rmse[i] <- sqrt(mean((z_ref-d_est$z)^2)) #metric
+  mae[i] <- mean(abs(z_ref-d_est$z))
+
+  print(paste("RMSE:", rmse[i]))
+  print(paste("MAE:", mae[i]))
+  #rm(d_est)
+  
+}
+
+plot(seq_scale, rmse*100, xlab="Scaling factor", ylab="RMSE (cm)")
+#
+# Now lets narrow in to fine the best performer
+#
+
+best_scale <- seq_scale[which(rmse==min(rmse))] #0.16
+
+worst_scale <- seq_scale[which(rmse==max(rmse))] #0.68
+
+fold_change <- (min(rmse)-max(rmse))/min(rmse)
+
+# lr <- best_scale - 0.01
+# ur <- best_scale + 0.01
+# n_seq <- seq(from=lr, to=ur, by=0.001)
+# 
+# n_rmse <- rep(NA, times=length(n_seq))
+# 
+# for(i in 1:length(n_seq)){
+#   
+#   rate_disp <- n_seq[i]
+#   
+#   print(paste(Sys.time(), " -- ", i, "of", length(n_seq), 
+#               "iterations --", "SF =", rate_disp))
+#   
+#   d_est <- data.frame(x = rep(NA, len=nrow(d_smp)) )
+#   d_est$x <- d_smp$x_source + sin(d_smp$aspect*pi/180) * d_smp$xy_disp * rate_disp
+#   d_est$y <- d_smp$y_source + cos(d_smp$aspect*pi/180) * d_smp$xy_disp * rate_disp
+#   d_est$z <- d_smp$z_source + sin(d_smp$slope*pi/180) * d_smp$xyz_disp * rate_disp
+#   d_est <- d_est[!is.na(d_est$z),]
+#   
+#   coordinates(d_est) <- ~x+y
+#   crs(d_est) <- crs(r_ref)
+#   
+#   #d_est@data$within_mask <- extract(r_mask, d_est)
+#   #d_est <- d_est[d_est@data$within_mask == 1,]
+#   
+#   z_ref <- extract(r_ref, d_est)
+#   
+#   n_rmse[i] <- sqrt(mean((z_ref-d_est$z)^2))
+#   print(paste("RMSE:", n_rmse[i]))
+#   #rm(d_est)
+#   
+# }
+# 
+# plot(n_seq, n_rmse*100, xlab="Scaling factor", ylab="RMSE (cm)")
+# 
+# bestest_scale <- n_seq[which(n_rmse==min(n_rmse))] #0.089
+# 
+# rate_disp <- bestest_scale
+
+rate_disp <- best_scale
+
+
+# Estimate elevations given displacement adjustment ##########################
+d_est <- data.frame(x = rep(NA, len=nrow(d)) )
+
+d_est$x <- d$x_source + sin(d$aspect*pi/180) * d$xy_disp * rate_disp
+d_est$y <- d$y_source + cos(d$aspect*pi/180) * d$xy_disp * rate_disp
+d_est$z <- d$z_source + sin(d$slope*pi/180) * d$xyz_disp * rate_disp
+
+d_est <- d_est[!is.na(d_est$z),]
+
+
+# For interpolating results, export locations as an x,y,z file
+# import in ArcGIS e.g. as import from points and use the
+# inverse distance weighted interpolation nmax 12.
+
+# Make sure to have the environment setting to match
+# the source and target images (DEMs) - snap raster etc.
+
+coordinates(d_est) <- ~x+y
+crs(d_est) <- crs(r_ref)
+
+
+
+setwd("D:\\WorkingProject\\Laurichard\\DEMs\\HRDEM20052015\\Geotiff")
+writeOGR(d_est, dsn = "OptEstElv_09v02.shp", layer= "OptEstElv_09v02", driver = 'ESRI Shapefile' )
+setwd("C:/Users/jg/Dropbox/PaperModelDisplacement/Data")
+
+
+
+# Interpolate #################################################################
+#RSAGA IDW is much much faster than GSTAT!!
+
+setwd("D:\\WorkingProject\\Laurichard\\DEMs\\Scratch")
+library(RSAGA)
+writeRaster(r_ref, filename="r_refTmp.sdat", format='SAGA', overwrite=TRUE)
+
+#rsaga.get.usage(lib="grid_gridding", module="Inverse Distance Weighted")
+#Create a default maxdist for IDW as the length of the extent's diagnol
+idw_maxdist <- eucDist(extent(d_est)[1],extent(d_est)[2],extent(d_est)[3],extent(d_est)[4])
+
+
+#rsaga.inverse.distance(in.shapefile="OptEstElv_09v02.shp", out.grid="dem_SAGA_OptEstElev_09v02",
+#                        field="z", power=2, maxdist=idw_maxdist, nmin=12,
+#                       target=rsaga.target(target="target.grid", target.grid="r_refTmp"))
+
+rsaga.geoprocessor(lib="grid_gridding", module="Inverse Distance Weighted",
+                   param= list(SHAPES="OptEstElv_09v02.shp",
+                               FIELD="z",
+                               TARGET_DEFINITION=1,
+                               TARGET_TEMPLATE="r_refTmp.sgrd",
+                               TARGET_OUT_GRID="dem_SAGA",
+                               SEARCH_RADIUS=idw_maxdist,
+                               SEARCH_POINTS_MIN=12,
+                               SEARCH_POINTS_MAX=20,
+                               DW_IDW_POWER=2))
+
+rsaga.geoprocessor(lib="ta_lighting", module="Analytical Hillshading",
+                    param=list(
+                        ELEVATION="dem_SAGA.sgrd",
+                        SHADE="hs_SAGA",
+                        AZIMUTH=315.000000,
+                        DECLINATION=45.00000,
+                        EXAGGERATION=1.00000))
+                      
+
+r_idw <- raster("dem_SAGA.sdat")
+
+r_hs <- raster("hs_SAGA.sdat")
+
+plot(r_hs, col=rev(grey.colors(255)), legend=FALSE)
+plot(r_hs, col=rev((0:100/100)), legend=FALSE)
+
+
+#plot(r_idw, col=rainbow(25, alpha=0.35), add=TRUE)
+
+
+# the source and target images (DEMs) - snap raster etc.
+setwd("D:\\WorkingProject\\Laurichard\\DEMs\\HRDEM20052015\\Geotiff")
+library(rgdal)
+writeOGR(sp_d, dsn = "Register_hs_Direct_v02.shp", layer= "Register_hs_Direct_v02", driver = 'ESRI Shapefile' )
+
+writeRaster(r_source, filename="r_refTmp.sdat", format='SAGA', overwrite=TRUE)
+
+#Create a default maxdist for IDW as the length of the extent's diagnol
+idw_maxdist <- eucDist(extent(sp_d)[1],extent(sp_d)[2],extent(sp_d)[3],extent(sp_d)[4])
+
+
+#rsaga.inverse.distance(in.shapefile="OptEstElv_09v02.shp", out.grid="dem_SAGA_OptEstElev_09v02",
+#                        field="z", power=2, maxdist=idw_maxdist, nmin=12,
+#                       target=rsaga.target(target="target.grid", target.grid="r_refTmp"))
+library(RSAGA)
+rsaga.geoprocessor(lib="grid_gridding", module="Inverse Distance Weighted",
+                   param= list(SHAPES="Register_hs_Direct_v02.shp",
+                               FIELD="z",
+                               TARGET_DEFINITION=1,
+                               TARGET_TEMPLATE="r_refTmp.sgrd",
+                               TARGET_OUT_GRID="Register_dem_Direct_v02",
+                               SEARCH_RADIUS=idw_maxdist,
+                               SEARCH_POINTS_MIN=12,
+                               SEARCH_POINTS_MAX=20,
+                               DW_IDW_POWER=2))
+
+rsaga.geoprocessor(lib="ta_lighting", module="Analytical Hillshading",
+                   param=list(
+                     ELEVATION="Register_dem_Direct_v02.sgrd",
+                     SHADE="Register_hs_Direct_v02",
+                     AZIMUTH=315.000000,
+                     DECLINATION=45.00000,
+                     EXAGGERATION=1.00000))
+
+
+
+
+r_idw <- raster("Register_dem_Direct_v02.sdat")
+
+r_hs <- raster("Register_hs_Direct_v02.sdat")
+
+plot(r_hs, col=rev(grey.colors(255)), legend=FALSE)
+plot(r_hs, col=rev((0:100/100)), legend=FALSE)
+

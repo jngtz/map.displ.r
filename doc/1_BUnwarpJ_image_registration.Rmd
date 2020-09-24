@@ -1,0 +1,68 @@
+---
+title: "BUnwarpJ image registration with DEMs"
+author: "Jason Goetz"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{BUnwarpJ image registration with DEMs}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+  \usepackage[utf8]{inputenc}
+---
+
+This vigenette is a short tutorial showing how to apply [BUnwarpJ plugin](https://imagej.net/BUnwarpJ) image registration to digital elevation models (DEMs).
+
+### Install Fiji
+Install [Fiji](https://fiji.sc/)
+
+### Open hillshade models
+File > Open
+May have trouble running with GEOTIFF –have to convert to PNG. – e.g with [IrfanView](https://www.irfanview.net/) (save with no compression) 
+(Remember order e.g. first 2012 than 2017)
+First, rock_glacier_hillshade_2012_50cm.tif
+Then, rock_glacier_hillshade_2017_50cm.tif
+
+![](/Users/gnj/Dropbox/R-Projects/map.displ.r/docs/Tutorial_images/Fiji-toolbar.JPG)
+
+![](/Users/gnj/Dropbox/R-Projects/map.displ.r/docs/Tutorial_images/open_hillshade_2012.JPG)
+
+![](/Users/gnj/Dropbox/R-Projects/map.displ.r/docs/Tutorial_images/open_hillshade_2017.JPG)
+  
+### Open bunwarpJ plugin and map landmarks
+Plugins > Registration > bUnwarpJ
+
+Map landmarks on 2012 and adjust in 2017 (stable and active areas)
+
+![](/Users/gnj/Dropbox/R-Projects/map.displ.r/docs/Tutorial_images/bunwarpj_toolbar.JPG)
+
+![](/Users/gnj/Dropbox/R-Projects/map.displ.r/docs/Tutorial_images/landmark_all_hillshade_2012.JPG)
+
+![](/Users/gnj/Dropbox/R-Projects/map.displ.r/docs/Tutorial_images/landmark_all_hillshade_2017.JPG)
+
+
+### Save landmarks
+Save landmarks bunwarpJ I/O Menu > Save Landmarks As…
+
+![](/Users/gnj/Dropbox/R-Projects/map.displ.r/docs/Tutorial_images/bunwarpj_io_menu.JPG)
+
+Name the file to remember the direction of mapping (i.e. 2012 to 2017; Landmarks_source2012_to_target2017.txt).
+
+Note: When loading landmarks – make sure that source image is 2012 and the target 2017, otherwise the landmarks will not be positioned correctly.
+
+### Run registration
+Can use the following settings (Note: mapping/loading landmarks will automatically use them for registration).
+
+![](/Users/gnj/Dropbox/R-Projects/map.displ.r/docs/Tutorial_images/bunwarpj_settings.JPG)
+ 
+Save transformation task will pop up when registration is complete. 
+
+![](/Users/gnj/Dropbox/R-Projects/map.displ.r/docs/Tutorial_images/convert_direct_to_raw_select_elastic.JPG)
+
+### Convert transformation to RAW
+This transformation file can be opened in R using the bunwarpj(). Re-name to include RAW just for file management. 
+In the I/O Menu select Convert Transformation to RAW
+1.	First select the transformation file
+2.	Write the filename – can be confusing because it says OPEN instead of convert/save
+
+![](/Users/gnj/Dropbox/R-Projects/map.displ.r/docs/Tutorial_images/convert_direct_to_raw_output_filename.JPG)
+

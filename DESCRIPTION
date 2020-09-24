@@ -1,0 +1,14 @@
+Package: map.displ.r
+Type: Package
+Version: 0.1
+Title: Processing ImageJ/Fiji BUnwarpJ Plugin's Image Registration Results for Mapping Surface Displacement
+Author: Jason Goetz
+Maintainer: Jason Goetz <jason.goetz@uni-jena.de>
+Description: For mapping 3D displacements from DEM image registration based on the BUnwarpJ plugin in ImageJ/Fiji
+License: GPL-3
+Encoding: UTF-8
+Imports: raster, rgdal
+LazyData: true
+RoxygenNote: 6.1.1
+Suggests: knitr, rmarkdown
+VignetteBuilder: knitr
