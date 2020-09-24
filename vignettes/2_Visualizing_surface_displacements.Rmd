@@ -59,7 +59,7 @@ disp_3d <- setValues(r_na, d_tx$xyz_disp)
 plot(disp_3d)
 ```
 
-### Visualizing surface displcaments
+### Visualizing surface displacements
 
 For visualization of the displacements in R, we can use `ggplot2` combined with the `metR` and `ggnewscale` packages. `metR` can create arrows indicating the magnitude and direction of displacement vectors, and `ggnewscale` lets us plot multiple `geom_raster()`'s each with their own fill scale and legend.
 
