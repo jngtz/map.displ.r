@@ -6,7 +6,7 @@ This R-package contains functions for mapping and scaling 3D displacements of ea
 
 Goetz, J., Fieguth, P., Kasiri, K., Bodin, X., Marcer, M., & Brenning, A. (2019). Accounting for permafrost creep in high-resolution snow depth mapping by modelling sub-snow ground deformation. *Remote Sensing of Environment*, 231, 111275. https://doi.org/10.1016/j.rse.2019.111275
 
-<img src="https://jngtz.github.io/map.displ.r/articles/2_Visualizing_surface_displacements_files/figure-html/unnamed-chunk-4-1.png" width="400">
+<img src="https://jngtz.github.io/map.displ.r/articles/2_Visualizing_surface_displacements_files/figure-html/unnamed-chunk-4-1.png" width="600">
 
 **Installation**
 
