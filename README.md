@@ -14,4 +14,4 @@ You can install this development version of map.displ.r with:
 devtools::install_github("jngtz/map.displ.r")
 
 **Examples**
-[Visualizing BUnwarpJ mapped surface displacements](https://github.com.io/jngtz/map.displ.r/docs/2_Visualizing_surface_displacements.html)
+[Visualizing BUnwarpJ mapped surface displacements](https://github.com.io/jngtz/map.displ.r/docs/2_Visualizing_surface_displacements.html) ...
