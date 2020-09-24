@@ -10,7 +10,7 @@ Goetz, J., Fieguth, P., Kasiri, K., Bodin, X., Marcer, M., & Brenning, A. (2019)
 **Installation**
 You can install this development version of map.displ.r with:
 
-devtools::install_github("giscience-fsu/sperrorest")
+devtools::install_github("jngtz/map.displ.r")
 
 **Examples**
 [Visualizing BUnwarpJ mapped surface displacements](https://github.com.io/jngtz/map.displ.r/docs/2_Visualizing_surface_displacements.html)
