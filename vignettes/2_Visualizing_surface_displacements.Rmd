@@ -32,6 +32,7 @@ To start, we will load our DEMs for the years 2012 and 2017 that were used for p
 
 ```{r}
 library(raster)
+library(sp)
 
 dem2012 <- raster("rock_glacier_dem_2012_50cm.tif")
 dem2017 <- raster("rock_glacier_dem_2017_50cm.tif")

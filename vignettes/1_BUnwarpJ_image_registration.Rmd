@@ -22,7 +22,7 @@ May have trouble running with GEOTIFF –have to convert to PNG. – e.g with [I
 First, rock_glacier_hillshade_2012_50cm.tif
 Then, rock_glacier_hillshade_2017_50cm.tif
 
-![](/Users/gnj/Dropbox/R-Projects/map.displ.r/doc/Tutorial_images/Fiji-toolbar.JPG)
+![](https://github.com/jngtz/map.displ.r/blob/master/doc/tutorial_images/Fiji-toolbar.JPG)
 
 ![](/Users/gnj/Dropbox/R-Projects/map.displ.r/doc/Tutorial_images/open_hillshade_2012.JPG)
 
