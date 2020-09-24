@@ -10,7 +10,6 @@ Goetz, J., Fieguth, P., Kasiri, K., Bodin, X., Marcer, M., & Brenning, A. (2019)
 **Installation**
 You can install this development version of map.displ.r with:
 
-#install.packages("devtools")
 devtools::install_github("giscience-fsu/sperrorest")
 
 **Examples**
