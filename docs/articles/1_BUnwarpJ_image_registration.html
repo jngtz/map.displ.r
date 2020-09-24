@@ -40,7 +40,7 @@
 <li>
   <a href="../index.html">
     <span class="fas fa fas fa-home fa-lg"></span>
-
+     
   </a>
 </li>
 <li>
@@ -49,7 +49,7 @@
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Articles
-
+     
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -70,23 +70,23 @@
 </div>
 <!--/.navbar -->
 
-
+      
 
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>BUnwarpJ image registration with DEMs</h1>
                         <h4 class="author">Jason Goetz</h4>
-
+            
             <h4 class="date">2020-09-24</h4>
-
-
+      
+      
       <div class="hidden name"><code>1_BUnwarpJ_image_registration.Rmd</code></div>
 
     </div>
 
-
-
+    
+    
 <p>This vigenette is a short tutorial showing how to apply <a href="https://imagej.net/BUnwarpJ">BUnwarpJ plugin</a> image registration to digital elevation models (DEMs).</p>
 <div id="install-fiji" class="section level3">
 <h3 class="hasAnchor">
@@ -97,24 +97,23 @@
 <h3 class="hasAnchor">
 <a href="#open-hillshade-models" class="anchor"></a>Open hillshade models</h3>
 <p>File &gt; Open May have trouble running with GEOTIFF –have to convert to PNG. – e.g with <a href="https://www.irfanview.net/">IrfanView</a> (save with no compression) (Remember order e.g. first 2012 than 2017) First, rock_glacier_hillshade_2012_50cm.tif Then, rock_glacier_hillshade_2017_50cm.tif</p>
-<p><img src="../../doc/tutorial_images/Fiji-toolbar.JPG"></p>
-<p><img src="../../../../Dropbox/R-Projects/map.displ.r/doc/tutorial_images/open_hillshade_2012.JPG"></p>
-<p><img src="../../../../Dropbox/R-Projects/map.displ.r/doc/tutorial_images/open_hillshade_2017.JPG"></p>
+<p><img src="Fiji-toolbar.png" width="571" height="107"><img src="open_hillshade_2012.png" width="453" height="570"></p>
+<p><img src="open_hillshade_2017.png" width="453" height="570"></p>
 </div>
 <div id="open-bunwarpj-plugin-and-map-landmarks" class="section level3">
 <h3 class="hasAnchor">
 <a href="#open-bunwarpj-plugin-and-map-landmarks" class="anchor"></a>Open bunwarpJ plugin and map landmarks</h3>
 <p>Plugins &gt; Registration &gt; bUnwarpJ</p>
 <p>Map landmarks on 2012 and adjust in 2017 (stable and active areas)</p>
-<p><img src="../../../../Dropbox/R-Projects/map.displ.r/doc/tutorial_images/bunwarpj_toolbar.JPG"></p>
-<p><img src="../../../../Dropbox/R-Projects/map.displ.r/doc/tutorial_images/landmark_all_hillshade_2012.JPG"></p>
-<p><img src="../../../../Dropbox/R-Projects/map.displ.r/doc/tutorial_images/landmark_all_hillshade_2017.JPG"></p>
+<p><img src="bunwarpj_toolbar.png" width="571" height="107"></p>
+<p><img src="landmark_all_hillshade_2012.png" width="673" height="828"></p>
+<p><img src="landmark_all_hillshade_2017.png" width="673" height="828"></p>
 </div>
 <div id="save-landmarks" class="section level3">
 <h3 class="hasAnchor">
 <a href="#save-landmarks" class="anchor"></a>Save landmarks</h3>
 <p>Save landmarks bunwarpJ I/O Menu &gt; Save Landmarks As…</p>
-<p><img src="../../../../Dropbox/R-Projects/map.displ.r/doc/tutorial_images/bunwarpj_io_menu.JPG"></p>
+<p><img src="bunwarpj_io_menu.png" width="313" height="514"></p>
 <p>Name the file to remember the direction of mapping (i.e. 2012 to 2017; Landmarks_source2012_to_target2017.txt).</p>
 <p>Note: When loading landmarks – make sure that source image is 2012 and the target 2017, otherwise the landmarks will not be positioned correctly.</p>
 </div>
@@ -122,15 +121,15 @@
 <h3 class="hasAnchor">
 <a href="#run-registration" class="anchor"></a>Run registration</h3>
 <p>Can use the following settings (Note: mapping/loading landmarks will automatically use them for registration).</p>
-<p><img src="../../../../Dropbox/R-Projects/map.displ.r/doc/tutorial_images/bunwarpj_settings.jpg"></p>
+<p><img src="bunwarpj_settings.png" width="413" height="518"></p>
 <p>Save transformation task will pop up when registration is complete.</p>
-<p><img src="../../../../Dropbox/R-Projects/map.displ.r/doc/tutorial_images/convert_direct_to_raw_select_elastic.JPG"></p>
+<p><img src="convert_direct_to_raw_select_elastic.png" width="502" height="358"></p>
 </div>
 <div id="convert-transformation-to-raw" class="section level3">
 <h3 class="hasAnchor">
 <a href="#convert-transformation-to-raw" class="anchor"></a>Convert transformation to RAW</h3>
 <p>This transformation file can be opened in R using the bunwarpj(). Re-name to include RAW just for file management. In the I/O Menu select Convert Transformation to RAW 1. First select the transformation file 2. Write the filename – can be confusing because it says OPEN instead of convert/save</p>
-<p><img src="../../../../Dropbox/R-Projects/map.displ.r/doc/tutorial_images/convert_direct_to_raw_output_filename.JPG"></p>
+<p><img src="convert_direct_to_raw_output_filename.png" width="502" height="358"></p>
 </div>
   </div>
 
@@ -153,7 +152,7 @@
       </footer>
 </div>
 
-
+  
 
 
   </body>
