@@ -25,13 +25,14 @@ This vignette
 * Shows how to visualize displacements directions and magnitudes
 
 
-As a case study, we will map the deformation patterns of rock glaicer using DEMs that were derived from lidar and structure-from-motion topographic surveying [(Goetz et al 2019)](https://www.sciencedirect.com/science/article/pii/S0034425719302949).
+As a case study, we will map the deformation patterns of a rock glaicer using DEMs that were derived from lidar and structure-from-motion topographic surveying [(Goetz et al 2019)](https://www.sciencedirect.com/science/article/pii/S0034425719302949).
 
 ### Data
-To start, we will load our DEMs for the years 2012 and 2017 that were used for performing image registration in BUnwarpJ for displcament mapping.
+To start, we will load our DEMs for the years 2012 and 2017 that were used for performing [image registration in BUnwarpJ](https://jngtz.github.io/map.displ.r/articles/1_BUnwarpJ_image_registration.html) for displcament mapping.
 
 ```{r}
 library(raster)
+library(sp)
 
 dem2012 <- raster("rock_glacier_dem_2012_50cm.tif")
 dem2017 <- raster("rock_glacier_dem_2017_50cm.tif")
@@ -58,7 +59,7 @@ disp_3d <- setValues(r_na, d_tx$xyz_disp)
 plot(disp_3d)
 ```
 
-### Visualizing surface displcaments
+### Visualizing surface displacements
 
 For visualization of the displacements in R, we can use `ggplot2` combined with the `metR` and `ggnewscale` packages. `metR` can create arrows indicating the magnitude and direction of displacement vectors, and `ggnewscale` lets us plot multiple `geom_raster()`'s each with their own fill scale and legend.
 

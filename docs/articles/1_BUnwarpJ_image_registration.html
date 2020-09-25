@@ -78,7 +78,7 @@
       <h1 data-toc-skip>BUnwarpJ image registration with DEMs</h1>
                         <h4 class="author">Jason Goetz</h4>
             
-            <h4 class="date">2020-09-24</h4>
+            <h4 class="date">2020-09-25</h4>
       
       
       <div class="hidden name"><code>1_BUnwarpJ_image_registration.Rmd</code></div>
@@ -87,16 +87,19 @@
 
     
     
-<p>This vigenette is a short tutorial showing how to apply <a href="https://imagej.net/BUnwarpJ">BUnwarpJ plugin</a> image registration to digital elevation models (DEMs).</p>
+<p>This vigenette is a short tutorial showing how to apply the <a href="https://imagej.net/BUnwarpJ">BUnwarpJ plugin</a> for performing image registration to digital elevation models (DEMs). An image registration maps the transformation of each pixel from a source image to a target image. In this example, we are mapping the sufrace displacement patterns of an active rock glacier using high-resolution (0.50 m x 0.50 m) DEMs.</p>
 <div id="install-fiji" class="section level3">
 <h3 class="hasAnchor">
 <a href="#install-fiji" class="anchor"></a>Install Fiji</h3>
-<p>Install <a href="https://fiji.sc/">Fiji</a></p>
+<p>Start by downloading and installing the open-source image processing software Fiji <a href="https://fiji.sc/" class="uri">https://fiji.sc/</a>, which already includes the BUnwarpJ plugin installed.</p>
 </div>
 <div id="open-hillshade-models" class="section level3">
 <h3 class="hasAnchor">
 <a href="#open-hillshade-models" class="anchor"></a>Open hillshade models</h3>
-<p>File &gt; Open May have trouble running with GEOTIFF –have to convert to PNG. – e.g with <a href="https://www.irfanview.net/">IrfanView</a> (save with no compression) (Remember order e.g. first 2012 than 2017) First, rock_glacier_hillshade_2012_50cm.tif Then, rock_glacier_hillshade_2017_50cm.tif</p>
+<p>We will use hillshade models derived from the DEMs to perform the registration. By using hillshade models, it is much easier for us to identify landmarks (i.e. boulders) that can help assist in the registration process.</p>
+<p>In Fiji, go to <code>File &gt; Open</code> to load the hillshade models.</p>
+<p>We need to remember the order the hillshade models were opened. The images need to be opened in this order when re-opening Fiji to continue working on a project. We will first open <code>rock_glacier_hillshade_2012_50cm.tif</code> and then <code>ock_glacier_hillshade_2017_50cm.tif</code>.</p>
+<p>Note: Fiji may have trouble opening a GEOTIFF. It may appear as a blank (i.e. black) image when opened. To get around this, we can convert it to a PNG image format. We can use <a href="https://www.irfanview.net/">IrfanView</a> to do this, just make sure to save with no compression. As long as the row and columns are consistent with the original GEOTIFF, we will have no problem <a href="https://jngtz.github.io/map.displ.r/articles/2_Visualizing_surface_displacements.html#importing-bunwarpj-transformation-file">transforming</a> the resulting displacement map to local coordinate reference system.</p>
 <p><img src="Fiji-toolbar.png" width="571" height="107"></p>
 <p><img src="open_hillshade_2012.png" width="453" height="570"></p>
 <p><img src="open_hillshade_2017.png" width="453" height="570"></p>
@@ -104,8 +107,9 @@
 <div id="open-bunwarpj-plugin-and-map-landmarks" class="section level3">
 <h3 class="hasAnchor">
 <a href="#open-bunwarpj-plugin-and-map-landmarks" class="anchor"></a>Open bunwarpJ plugin and map landmarks</h3>
-<p>Plugins &gt; Registration &gt; bUnwarpJ</p>
-<p>Map landmarks on 2012 and adjust in 2017 (stable and active areas)</p>
+<p>Now we will will open the bUnwarpJ plugin for performing non-rigid image registration using b-splines,</p>
+<p><code>Plugins &gt; Registration &gt; bUnwarpJ</code></p>
+<p>Similar to georeferencing images in a GIS, we will map landmarks in the 2012 and 2017 hillshade models to help with the registration process. For the rock glaicer, we will map landmarks in active and stable areas of the scene.</p>
 <p><img src="bunwarpj_toolbar.png" width="571" height="107"></p>
 <p><img src="landmark_all_hillshade_2012.png" width="673" height="828"></p>
 <p><img src="landmark_all_hillshade_2017.png" width="673" height="828"></p>
@@ -113,24 +117,31 @@
 <div id="save-landmarks" class="section level3">
 <h3 class="hasAnchor">
 <a href="#save-landmarks" class="anchor"></a>Save landmarks</h3>
-<p>Save landmarks bunwarpJ I/O Menu &gt; Save Landmarks As…</p>
+<p>Don’t forget to save the landmarks we just mapped,</p>
+<p><code>I/O Menu &gt; Save Landmarks As…</code></p>
+<p>We should use a filename to remember the direction of mapping, e.g., <code>Landmarks_source2012_to_target2017.txt</code>.</p>
 <p><img src="bunwarpj_io_menu.png" width="313" height="514"></p>
-<p>Name the file to remember the direction of mapping (i.e. 2012 to 2017; Landmarks_source2012_to_target2017.txt).</p>
-<p>Note: When loading landmarks – make sure that source image is 2012 and the target 2017, otherwise the landmarks will not be positioned correctly.</p>
+<p>Note: When loading landmarks, make sure that source image is the 2012 hillshade and the target image is the 2017 hillshade, otherwise the landmarks will not be positioned correctly.</p>
 </div>
 <div id="run-registration" class="section level3">
 <h3 class="hasAnchor">
 <a href="#run-registration" class="anchor"></a>Run registration</h3>
-<p>Can use the following settings (Note: mapping/loading landmarks will automatically use them for registration).</p>
+<p>Now we can run the registration. We can use the following settings. By mapping/loading landmarks, they will be automatically used for the registration.</p>
 <p><img src="bunwarpj_settings.png" width="413" height="518"></p>
-<p>Save transformation task will pop up when registration is complete.</p>
-<p><img src="convert_direct_to_raw_select_elastic.png" width="502" height="358"></p>
+<p>A <code>Save transformation task</code> will pop up when registration is complete.</p>
 </div>
 <div id="convert-transformation-to-raw" class="section level3">
 <h3 class="hasAnchor">
 <a href="#convert-transformation-to-raw" class="anchor"></a>Convert transformation to RAW</h3>
-<p>This transformation file can be opened in R using the bunwarpj(). Re-name to include RAW just for file management. In the I/O Menu select Convert Transformation to RAW 1. First select the transformation file 2. Write the filename – can be confusing because it says OPEN instead of convert/save</p>
+<p>This transformation file can be <a href="https://jngtz.github.io/map.displ.r/articles/2_Visualizing_surface_displacements.html#importing-bunwarpj-transformation-file">opened in R</a>.</p>
+<p>Select <code>I/O Menu &gt; Convert Transformation to RAW</code></p>
+<ol style="list-style-type: decimal">
+<li>First select the transformation file</li>
+<li>Write the filename – can be confusing because it says OPEN instead of convert/save</li>
+</ol>
+<p><img src="convert_direct_to_raw_select_elastic.png" width="502" height="358"></p>
 <p><img src="convert_direct_to_raw_output_filename.png" width="502" height="358"></p>
+<p>Now we can use R for <a href="https://jngtz.github.io/map.displ.r/articles/2_Visualizing_surface_displacements.html">transforming the image registration to a local CRS and visualizing the mapped surface displacement results</a>.</p>
 </div>
   </div>
 

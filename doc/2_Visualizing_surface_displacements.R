@@ -1,28 +1,29 @@
-## ----setup, include=FALSE------------------------------------------------
+## ----setup, include=FALSE-----------------------------------------------------
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE,
 comment = "#>")
 knitr::opts_knit$set(root.dir = "/Users/gnj/Dropbox/R-Projects/map.displ.r/inst/extdata/")
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 library(raster)
+library(sp)
 
 dem2012 <- raster("rock_glacier_dem_2012_50cm.tif")
 dem2017 <- raster("rock_glacier_dem_2017_50cm.tif")
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 library(map.displ.r)
 f_tx <- "RAW_rock_glacier_hillshade_2012_50cm_direct_transf.txt"
 d_tx <- dem.displacement.mapping(tx_file = f_tx, r_source = dem2012, r_target = dem2017)
 head(d_tx)
 
-## ----  fig.height=6, fig.width = 6---------------------------------------
+## ----  fig.height=6, fig.width = 6--------------------------------------------
 
 # Assign displacement values to an emptry raster to export
 r_na <- setValues(dem2012, NA)
 disp_3d <- setValues(r_na, d_tx$xyz_disp)
 plot(disp_3d)
 
-## ----  fig.height=6, fig.width = 6---------------------------------------
+## ----  fig.height=6, fig.width = 6--------------------------------------------
 library(ggplot2)
 library(metR)
 library(ggnewscale)
