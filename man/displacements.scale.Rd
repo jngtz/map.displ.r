@@ -8,8 +8,7 @@ displacements.scale(d_tx, scale_factor, xyz_disp = TRUE,
   return_sp = FALSE, r_ref = NA)
 }
 \arguments{
-\item{d_tx}{a data frame containing the transformation vectors from
-obtained from the \code{bunwarpjDisplacementField()} function}
+\item{d_tx}{a data frame containing the transformation vectors imported from bUnwarpJ}
 
 \item{scale_factor}{the scale factor (\code{numeric}) to adjust the displacement magnitudes}
 

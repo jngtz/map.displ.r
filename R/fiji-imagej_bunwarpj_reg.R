@@ -203,7 +203,7 @@ reverse.orientation <- function(angle){
 #' being due north and 90 degrees being due east}
 
 
-read.bunwarpj.2Dtransformation <- function(tx_file, r_source, r_target){
+read.bunwarpj.displacements <- function(tx_file, r_source, r_target){
   ## Determine no. of columns and rows from file header
   dimensions <- as.character(read.table(tx_file, header=FALSE, nrows=2)[,1])
   dimensions <- as.numeric(gsub("^.*\\=", "",dimensions))
@@ -421,8 +421,7 @@ dem.displacement.mapping <- function(tx_file, r_source, r_target, is_inverse = F
 #' Applies a scale factor to adjust the magnitudes of displacement
 #'     vectors
 #'
-#' @param d_tx a data frame containing the transformation vectors from
-#'      obtained from the \code{bunwarpjDisplacementField()} function
+#' @param d_tx a data frame containing the transformation vectors imported from bUnwarpJ
 #' @param scale_factor the scale factor (\code{numeric}) to adjust the displacement magnitudes
 #' @param xyz_disp  (\code{logical}) \code{TRUE} if x,y and z displacements
 #'      are to be scaled, and \code{FALSE} if only x,y displacements are to be scaled.

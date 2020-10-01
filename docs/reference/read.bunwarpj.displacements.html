@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Scale displacements — displacements.scale • map.displ.r</title>
+<title>2D image displacement mapping from BUnwarpJ — read.bunwarpj.displacements • map.displ.r</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,8 @@
 
 
 
-<meta property="og:title" content="Scale displacements — displacements.scale" />
-<meta property="og:description" content="Applies a scale factor to adjust the magnitudes of displacement
-    vectors" />
+<meta property="og:title" content="2D image displacement mapping from BUnwarpJ — read.bunwarpj.displacements" />
+<meta property="og:description" content="Perform 2D displacement mapping from raster images (or DEMs) using raw BUnwarpJ transformation file" />
 
 
 
@@ -119,51 +118,46 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Scale displacements</h1>
+    <h1>2D image displacement mapping from BUnwarpJ</h1>
     
-    <div class="hidden name"><code>displacements.scale.Rd</code></div>
+    <div class="hidden name"><code>read.bunwarpj.displacements.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Applies a scale factor to adjust the magnitudes of displacement
-    vectors</p>
+    <p>Perform 2D displacement mapping from raster images (or DEMs) using raw BUnwarpJ transformation file</p>
     </div>
 
-    <pre class="usage"><span class='fu'>displacements.scale</span>(<span class='kw'>d_tx</span>, <span class='kw'>scale_factor</span>, xyz_disp = <span class='fl'>TRUE</span>,
-  return_sp = <span class='fl'>FALSE</span>, r_ref = <span class='fl'>NA</span>)</pre>
+    <pre class="usage"><span class='fu'>read.bunwarpj.displacements</span>(<span class='kw'>tx_file</span>, <span class='kw'>r_source</span>, <span class='kw'>r_target</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>d_tx</th>
-      <td><p>a data frame containing the transformation vectors imported from bUnwarpJ</p></td>
+      <th>tx_file</th>
+      <td><p>The raw transformation file (.txt) from BUnwarpJ.</p></td>
     </tr>
     <tr>
-      <th>scale_factor</th>
-      <td><p>the scale factor (<code>numeric</code>) to adjust the displacement magnitudes</p></td>
+      <th>r_source</th>
+      <td><p>The DEM raster filename used as source for image registration.</p></td>
     </tr>
     <tr>
-      <th>xyz_disp</th>
-      <td><p>(<code>logical</code>) <code>TRUE</code> if x,y and z displacements
-are to be scaled, and <code>FALSE</code> if only x,y displacements are to be scaled.</p></td>
-    </tr>
-    <tr>
-      <th>return_sp</th>
-      <td><p>(<code>logical</code>) <code>TRUE</code> to return a
-SpatialPointsDataFrame based on the CRS projection of
-a reference <code><a href='https://rdrr.io/pkg/raster/man/raster.html'>raster</a></code> object</p></td>
-    </tr>
-    <tr>
-      <th>r_ref</th>
-      <td><p>a <code><a href='https://rdrr.io/pkg/raster/man/raster.html'>raster</a></code> that has the CRS projection
-of the displacements</p></td>
+      <th>r_target</th>
+      <td><p>The DEM raster filename used as target for image registration.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A data frame of the scaled displacements</p>
+    <p>Returns a data frame containing the following columns:</p>
+<dt>x_source &amp; y_source</dt><dd><p>x &amp; y coordinates from a CRS for the registration</p></dd>
+<dt>x_target &amp; y_target</dt><dd><p>x &amp; y coordinates from a CRS representing the x &amp;
+y transformation for every location in the source image</p></dd>
+<dt>x_disp</dt><dd><p>x displacement of registered image (from source image)</p></dd>
+<dt>y_disp</dt><dd><p>y displacement of registered image (from source image)</p></dd>
+<dt>xy_disp</dt><dd><p>magnitude of the displacement in 2D (xy)</p></dd>
+<dt>aspect</dt><dd><p>geographic orientation of vector direction with 0 degrees
+being due north and 90 degrees being due east</p></dd>
+
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
