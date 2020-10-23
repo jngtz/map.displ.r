@@ -16,7 +16,7 @@ comment = "#>")
 knitr::opts_knit$set(root.dir = "/Users/gnj/Dropbox/R-Projects/map.displ.r/inst/extdata/")
 ```
 
-The [BUnwarpJ plugin](https://imagej.net/BUnwarpJ) in the open-source image processing package [ImageJ/Fiji](https://imagej.net/Fiji) can be a very useful tool for high-resolution surface deformation modelling from digital elevation models (DEMs). The `map.disp.r` package was built for importing bUnwarpJ image registration based on DEMs and computing displacements in the x,y and z directions. 
+The [BUnwarpJ plugin](https://imagej.net/BUnwarpJ) in the open-source image processing software [ImageJ/Fiji](https://imagej.net/Fiji) can be a very useful tool for high-resolution surface deformation modelling from digital elevation models (DEMs). The `map.disp.r` package was built for importing bUnwarpJ image registration based on DEMs and computing displacements in the x,y and z directions. 
 
 This vignette
 
@@ -25,7 +25,7 @@ This vignette
 * Shows how to visualize displacements directions and magnitudes
 
 
-As a case study, we will map the deformation patterns of a rock glaicer using DEMs that were derived from lidar and structure-from-motion topographic surveying [(Goetz et al 2019)](https://www.sciencedirect.com/science/article/pii/S0034425719302949).
+As a case study, we will map the deformation patterns of a rock glacier using DEMs that were derived from lidar and structure-from-motion topographic surveying [(Goetz et al 2019)](https://www.sciencedirect.com/science/article/pii/S0034425719302949).
 
 ### Data
 To start, we will load our DEMs for the years 2012 and 2017 that were used for performing [image registration in BUnwarpJ](https://jngtz.github.io/map.displ.r/articles/1_BUnwarpJ_image_registration.html) for displcament mapping.

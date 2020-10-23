@@ -78,7 +78,7 @@
       <h1 data-toc-skip>Visualizing surface displacements from BUnwarpJ</h1>
                         <h4 class="author">Jason Goetz</h4>
             
-            <h4 class="date">2020-10-01</h4>
+            <h4 class="date">2020-10-23</h4>
       
       
       <div class="hidden name"><code>2_Visualizing_surface_displacements.Rmd</code></div>
@@ -87,14 +87,14 @@
 
     
     
-<p>The <a href="https://imagej.net/BUnwarpJ">BUnwarpJ plugin</a> in the open-source image processing package <a href="https://imagej.net/Fiji">ImageJ/Fiji</a> can be a very useful tool for high-resolution surface deformation modelling from digital elevation models (DEMs). The <code>map.disp.r</code> package was built for importing bUnwarpJ image registration based on DEMs and computing displacements in the x,y and z directions.</p>
+<p>The <a href="https://imagej.net/BUnwarpJ">BUnwarpJ plugin</a> in the open-source image processing software <a href="https://imagej.net/Fiji">ImageJ/Fiji</a> can be a very useful tool for high-resolution surface deformation modelling from digital elevation models (DEMs). The <code>map.disp.r</code> package was built for importing bUnwarpJ image registration based on DEMs and computing displacements in the x,y and z directions.</p>
 <p>This vignette</p>
 <ul>
 <li>Describes and illustrates how to import raw transformation files exported from BUnwarpJ</li>
 <li>Shows how to create a raster of the displacements</li>
 <li>Shows how to visualize displacements directions and magnitudes</li>
 </ul>
-<p>As a case study, we will map the deformation patterns of a rock glaicer using DEMs that were derived from lidar and structure-from-motion topographic surveying <a href="https://www.sciencedirect.com/science/article/pii/S0034425719302949">(Goetz et al 2019)</a>.</p>
+<p>As a case study, we will map the deformation patterns of a rock glacier using DEMs that were derived from lidar and structure-from-motion topographic surveying <a href="https://www.sciencedirect.com/science/article/pii/S0034425719302949">(Goetz et al 2019)</a>.</p>
 <div id="data" class="section level3">
 <h3 class="hasAnchor">
 <a href="#data" class="anchor"></a>Data</h3>
